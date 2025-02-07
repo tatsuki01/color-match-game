@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-const API_URL = "https://your-project-name.onrender.com"; // Flask サーバーの URL
+const API_URL = "https://color-match-game-q2e6.onrender.com"; // Flask サーバーの URL
 
 function App() {
   const [targetGrid, setTargetGrid] = useState([]);
-  const [userGrid, setUserGrid] = useState(Array(3).fill(Array(3).fill("#FFC0CB")));
+  const [userGrid, setUserGrid] = useState(() =>
+    Array.from({ length: 3 }, () => Array(3).fill("#FFC0CB"))
+  );
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [score, setScore] = useState(0);
@@ -18,6 +20,7 @@ function App() {
       .then(data => {
         setTargetGrid(data.target);
         setStartTime(Date.now());
+        setUserGrid(Array.from({ length: 3 }, () => Array(3).fill("#FFC0CB"))); // ここでリセットしない
       });
   }, [score]);
 
@@ -40,20 +43,21 @@ function App() {
     );
   };
 
-  // クリアチェック
+  // クリアチェック（`useEffect` で `userGrid` の変更を監視）
   useEffect(() => {
     if (JSON.stringify(userGrid) === JSON.stringify(targetGrid)) {
-      setScore(score + 1);
       if (score + 1 >= 20) {
+        setGameOver(true);
         fetch(`${API_URL}/save_score`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ time: elapsedTime }),
         });
-        setGameOver(true);
+      } else {
+        setScore(prevScore => prevScore + 1);
       }
     }
-  }, [userGrid]);
+  }, [userGrid, targetGrid, score]);
 
   // 記録を取得
   const fetchRecords = () => {
