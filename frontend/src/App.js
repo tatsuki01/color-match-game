@@ -63,6 +63,14 @@ function App() {
     );
   };
 
+  const returnToTitle = () => {
+    setGameState("title");
+    setGameOver(false);  // ✅ ここで `gameOver` をリセット
+    setScore(0);
+    setTotalTime(0);
+  };
+  
+
   // クリアチェック
   useEffect(() => {
     if (JSON.stringify(userGrid) === JSON.stringify(targetGrid)) {
@@ -75,7 +83,7 @@ function App() {
         setScore(prevScore => prevScore + 1);
         setTimeout(() => {
           fetchNewGame();
-        }, 200); // 0.2秒遅延させて次の問題へ
+        }, 50); // 0.2秒遅延させて次の問題へ
       }
     }
   }, [userGrid]);
@@ -92,6 +100,15 @@ function App() {
     }
   }, [gameOver]);
 
+  const exitGame = () => {
+    const confirmExit = window.confirm("本当に終了しますか？");
+    if (confirmExit) {
+      window.open("about:blank", "_self");  // **新しいタブを開き、自分を閉じる**
+      window.close();
+    }
+  };
+  
+
   // **タイトル画面**
   if (gameState === "title") {
     return (
@@ -99,7 +116,7 @@ function App() {
         <h1>マス目をそろえろ！</h1>
         <button onClick={startGame}>ゲーム開始</button>
         <button onClick={fetchRecords}>記録を見る</button>
-        <button onClick={() => window.close()}>辞める</button>
+        <button onClick={exitGame}>辞める</button>
       </div>
     );
   }
@@ -114,7 +131,7 @@ function App() {
         ) : (
           <p>記録なし</p>
         )}
-        <button onClick={() => setGameState("title")}>タイトルに戻る</button>
+        <button onClick={returnToTitle}>タイトルに戻る</button>
       </div>
     );
   }
@@ -125,7 +142,7 @@ function App() {
       {gameOver ? (
         <div className="result">
           <h2>ゲーム終了！合計時間: {totalTime.toFixed(1)} 秒</h2>
-          <button onClick={() => setGameState("title")}>タイトルに戻る</button>
+          <button onClick={returnToTitle}>タイトルに戻る</button>
         </div>
       ) : (
         <>
