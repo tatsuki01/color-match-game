@@ -9,8 +9,7 @@ CORS(app)  # フロントエンドとのCORSエラーを防ぐ
 
 history_file = "game_records.json"
 COLORS = ["#FFC0CB", "#87CEFA"]
-
-@app.route("/", methods=["GET"])  # 追加する
+@app.route("/", methods=["GET", "HEAD"])  # HEAD リクエストも許可
 def home():
     return jsonify({"message": "Flask server is running!"}), 200
 
