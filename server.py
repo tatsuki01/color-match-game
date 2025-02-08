@@ -9,9 +9,15 @@ CORS(app)  # フロントエンドとのCORSエラーを防ぐ
 
 history_file = "game_records.json"
 COLORS = ["#FFC0CB", "#87CEFA"]
-@app.route("/", methods=["GET", "HEAD"])  # HEAD リクエストも許可
+print("🔥 Registered Routes:")
+for rule in app.url_map.iter_rules():
+    print(f"➡ {rule} - Methods: {', '.join(rule.methods)}")
+
+@app.route("/", methods=["GET", "HEAD"])
 def home():
+    print("✅ GET / request received")  # ルートにアクセスされたらログを出力
     return jsonify({"message": "Flask server is running!"}), 200
+
 
 def generate_target():
     return [[random.choice(COLORS) for _ in range(3)] for _ in range(3)]
