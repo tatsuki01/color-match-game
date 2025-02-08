@@ -1,32 +1,121 @@
-.container {
-  text-align: center;
+/* 💠 共通スタイル */
+body {
   font-family: Arial, sans-serif;
+  text-align: center;
+  background: linear-gradient(to right, #ff9a9e, #fad0c4);
+  margin: 0;
+  padding: 0;
+}
+
+/* 🎮 タイトル画面 */
+.title-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+button {
+  background-color: #ff6b81;
+  color: white;
+  font-size: 1.2rem;
+  border: none;
+  padding: 12px 24px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #ff4757;
+}
+
+/* 🎯 ゲーム画面 */
+.container {
+  padding: 20px;
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: #fff;
 }
 
 .game {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 50px;
   margin-top: 20px;
 }
 
+/* 🏆 お題＆プレイヤーボード */
+.target, .board {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+h4 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* 📦 マス目のスタイル */
 .row {
   display: flex;
+  justify-content: center;
 }
 
 .cell {
-  width: 50px;
-  height: 50px;
-  border: 1px solid black;
-  margin: 2px;
+  width: 60px;
+  height: 60px;
+  border: 2px solid #ccc;
+  margin: 5px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-.target .cell {
-  width: 30px;
-  height: 30px;
+.cell:hover {
+  transform: scale(1.1);
 }
 
-.records {
+/* 🎉 ゲーム終了画面 */
+.result {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.result h2 {
+  font-size: 2rem;
+  color: #ff4757;
+}
+
+/* 🏅 記録画面 */
+.records-screen {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  display: inline-block;
   margin-top: 20px;
 }
