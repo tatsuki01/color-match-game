@@ -3,7 +3,9 @@ from flask_cors import CORS
 import random
 import json
 import os
-
+print("🚀 server.py is starting...")
+import sys
+print(f"🔍 Python version: {sys.version}")
 app = Flask(__name__)
 CORS(app)  # フロントエンドとのCORSエラーを防ぐ
 
