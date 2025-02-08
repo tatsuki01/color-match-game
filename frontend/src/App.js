@@ -9,22 +9,25 @@ function App() {
   );
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [totalTime, setTotalTime] = useState(0);
   const [score, setScore] = useState(0);
   const [records, setRecords] = useState([]);
   const [gameOver, setGameOver] = useState(false);
 
   // ゲーム開始時にお題を取得
   useEffect(() => {
-    fetch(`${API_URL}/new_game`)
-      .then(res => res.json())
-      .then(data => {
-        setTargetGrid(data.target);
-        setStartTime(Date.now());
-        setUserGrid(Array.from({ length: 3 }, () => Array(3).fill("#FFC0CB"))); // ここでリセットしない
-      });
+    if (score < 20) {
+      fetch(`${API_URL}/new_game`)
+        .then(res => res.json())
+        .then(data => {
+          setTargetGrid(data.target);
+          setUserGrid(Array.from({ length: 3 }, () => Array(3).fill("#FFC0CB"))); // ユーザーのマスはリセットしない
+          setStartTime(Date.now()); // 新しい問題の開始時間
+        });
+    }
   }, [score]);
 
-  // タイマーを更新
+  // タイマーを更新 (プレイ中のみカウント)
   useEffect(() => {
     if (startTime) {
       const timer = setInterval(() => {
@@ -46,18 +49,28 @@ function App() {
   // クリアチェック（`useEffect` で `userGrid` の変更を監視）
   useEffect(() => {
     if (JSON.stringify(userGrid) === JSON.stringify(targetGrid)) {
+      const timeTaken = parseFloat(elapsedTime);
+      setTotalTime(prevTotal => prevTotal + timeTaken); // 合計時間を加算
+
       if (score + 1 >= 20) {
         setGameOver(true);
-        fetch(`${API_URL}/save_score`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ time: elapsedTime }),
-        });
+        return;
       } else {
         setScore(prevScore => prevScore + 1);
       }
     }
   }, [userGrid, targetGrid, score]);
+
+  // ゲーム終了時に記録を保存
+  useEffect(() => {
+    if (gameOver) {
+      fetch(`${API_URL}/save_score`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ time: totalTime.toFixed(1) }),
+      });
+    }
+  }, [gameOver]);
 
   // 記録を取得
   const fetchRecords = () => {
@@ -70,14 +83,15 @@ function App() {
     <div className="container">
       {gameOver ? (
         <div className="result">
-          <h2>ゲーム終了！合計時間: {elapsedTime} 秒</h2>
+          <h2>ゲーム終了！合計時間: {totalTime.toFixed(1)} 秒</h2>
           <button onClick={() => window.location.reload()}>タイトルに戻る</button>
         </div>
       ) : (
         <>
           <h1>マス目をそろえろ！</h1>
           <h2>問題数: {score + 1} / 20</h2>
-          <h3>Time: {elapsedTime} sec</h3>
+          <h3>現在の問題の時間: {elapsedTime} sec</h3>
+          <h3>合計時間: {totalTime.toFixed(1)} sec</h3>
 
           <div className="game">
             <div className="target">
